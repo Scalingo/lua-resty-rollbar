@@ -1,8 +1,6 @@
 local http = require 'resty.http'
 local json = require 'cjson'
 
-local ngx = ngx
-
 local _M = {
   version  = '0.1.0',
 
