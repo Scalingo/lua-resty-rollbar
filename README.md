@@ -31,3 +31,11 @@ function main()
 	}
 end
 ```
+
+## Publish on LuaRocks
+
+```
+luarocks upload --api-key=<API key> ./lua-resty-rollbar-0.1.0-1.rockspec
+```
+
+The API key is from [LuaRocks settings](https://luarocks.org/settings/api-keys).
