@@ -22,6 +22,6 @@ read_globals = {
   },
 } -- these globals can only be accessed.
 
-files["lua/specs/packages/scalingo/*_spec.lua"].std = "+busted"
+files["specs/lib/resty/*_spec.lua"].std = "+busted"
 
 exclude_files = ["*.rockspec", ]

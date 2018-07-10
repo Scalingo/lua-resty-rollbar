@@ -1,4 +1,4 @@
-# lua-resty-rollbar ![Module Version][badge-version-image]
+# lua-resty-rollbar [ ![Codeship Status for Scalingo/lua-resty-rollbar](https://app.codeship.com/projects/d0902e10-6667-0136-c148-5e8eddb6d7b2/status?branch=master)](https://app.codeship.com/projects/297381)
 
 Simple module for [OpenResty](http://openresty.org/) to send errors to
 [Rollbar](https://rollbar.com).
