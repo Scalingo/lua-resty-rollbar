@@ -1,0 +1,9 @@
+version: '3'
+services:
+  test:
+    build: .
+    working_dir: /root/lua
+    volumes:
+      - ./entrypoint.sh:/entrypoint.sh
+      - ./lib:/root/lua
+      - ./specs:/root/lua/specs

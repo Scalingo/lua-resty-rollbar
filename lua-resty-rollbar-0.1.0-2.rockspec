@@ -30,6 +30,6 @@ dependencies = {
 build = {
   type = 'builtin',
   modules = {
-    ['resty.rollbar'] = 'lib/resty/rollbar/client.lua',
+    ['resty.rollbar'] = 'lib/resty/rollbar.lua',
   },
 }

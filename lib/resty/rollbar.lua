@@ -83,6 +83,8 @@ local function send_request(_, level, title, stacktrace, request)
   }
 
   local httpc = http.new()
+  -- request_uri automatically close the underlying connection so we don't need to close it by
+  -- ourselves.
   local res, err = httpc:request_uri(endpoint, {
     method = 'POST',
     headers = {
@@ -166,6 +168,13 @@ function _M.report(level, title)
 
   -- create a light thread to send the HTTP request in background
   ngx.timer.at(0, send_request, level, title, debug.traceback(), request)
+end
+
+function _M.reset()
+  token = nil
+  environment = 'development'
+  endpoint = 'https://api.rollbar.com/api/1/item/'
+  rollbar_initted = nil
 end
 
 return _M

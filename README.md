@@ -1,4 +1,4 @@
-# lua-resty-rollbar
+# lua-resty-rollbar ![Module Version][badge-version-image]
 
 Simple module for [OpenResty](http://openresty.org/) to send errors to
 [Rollbar](https://rollbar.com).
@@ -30,6 +30,24 @@ function main()
 		return
 	}
 end
+```
+
+## Execute the tests
+
+The tests are written using the [busted](http://olivinelabs.com/busted/) unit testing
+framework. To ease the testing of this package, we provide a self contained Docker Compose file
+to execute the unit tests.
+
+Run the Docker Compose container in a terminal:
+
+```
+docker-compose up
+```
+
+In a different terminal, execute the tests with:
+
+```
+docker-compose exec test busted specs
 ```
 
 ## Publish on LuaRocks
