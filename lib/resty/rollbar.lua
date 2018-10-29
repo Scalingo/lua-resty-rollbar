@@ -52,8 +52,8 @@ local function gethostname()
   return ''
 end
 
--- send_request is a function which sends the given message at the specified level to Rollbar.
--- This function should be call asynchronously with ngx.timer.at.
+-- send_request sends the given message at the specified level to Rollbar. This function should be
+-- call asynchronously with ngx.timer.at.
 --
 -- First argument of a function called with ngx.timer.at is premature
 -- (https://github.com/openresty/lua-nginx-module#ngxtimerat)
@@ -83,7 +83,7 @@ local function send_request(_, level, title, stacktrace, request)
   }
 
   local httpc = http.new()
-  -- request_uri automatically close the underlying connection so we don't need to close it by
+  -- request_uri automatically closes the underlying connection so we don't need to close it by
   -- ourselves.
   local res, err = httpc:request_uri(endpoint, {
     method = 'POST',
@@ -130,7 +130,7 @@ function _M.set_endpoint(e)
 end
 
 -- report sends an error to Rollbar with the given level and title.
--- It fills the other fields using Nginx API for lua
+-- It fills the other fields using Nginx API for Lua
 -- (https://github.com/openresty/lua-nginx-module#nginx-api-for-lua).
 function _M.report(level, title)
   if rollbar_initted == nil then
