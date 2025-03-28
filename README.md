@@ -50,13 +50,13 @@ to execute the unit tests.
 Run the Docker Compose container in a terminal:
 
 ```bash
-docker-compose up
+docker compose up
 ```
 
 In a different terminal, execute the tests with:
 
 ```bash
-docker-compose exec test busted specs
+docker compose exec test busted specs
 ```
 
 ## Publish on LuaRocks

@@ -113,9 +113,9 @@ if [[ ! -f "$RESTY_HOME/.versions" ]] || [[ "${VERSIONS}" != "$(cat $RESTY_HOME/
   && ln -sf /dev/stdout ${RESTY_HOME}/nginx/logs/access.log \
   && ln -sf /dev/stderr ${RESTY_HOME}/nginx/logs/error.log
 
-  $RESTY_HOME/luajit/bin/luarocks install lua-messagepack 0.5.1 \
+  $RESTY_HOME/luajit/bin/luarocks install lua-messagepack 0.5.4 \
       && $RESTY_HOME/luajit/bin/luarocks install lua-resty-uuid 1.1 \
-      && $RESTY_HOME/luajit/bin/luarocks install lua-resty-http 0.10 \
+      && $RESTY_HOME/luajit/bin/luarocks install lua-resty-http 0.17.2 \
       && $RESTY_HOME/luajit/bin/luarocks install lua-resty-cookie 0.1.0 \
       && $RESTY_HOME/luajit/bin/luarocks install lua-resty-rollbar 0.1.0 \
       && $RESTY_HOME/luajit/bin/luarocks install busted
