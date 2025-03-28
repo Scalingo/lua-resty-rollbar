@@ -11,7 +11,7 @@ stack traces. Errors are sent to Rollbar asynchronously in a light thread.
 Install using LuaRocks:
 
 ```bash
-luarocks install lua-resty-rollbar 0.1.0
+luarocks install lua-resty-rollbar 0.2.0
 ```
 
 ## Usage
@@ -62,7 +62,7 @@ docker compose exec test busted specs
 ## Publish on LuaRocks
 
 ```bash
-luarocks upload --api-key=<API key> ./lua-resty-rollbar-0.1.0-1.rockspec
+luarocks upload --api-key=<API key> ./lua-resty-rollbar-0.2.0-1.rockspec
 ```
 
 The API key is from [LuaRocks settings](https://luarocks.org/settings/api-keys).
