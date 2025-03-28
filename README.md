@@ -1,4 +1,4 @@
-# lua-resty-rollbar [ ![Codeship Status for Scalingo/lua-resty-rollbar](https://app.codeship.com/projects/d0902e10-6667-0136-c148-5e8eddb6d7b2/status?branch=master)](https://app.codeship.com/projects/297381)
+# lua-resty-rollbar [![Codeship Status for Scalingo/lua-resty-rollbar](https://app.codeship.com/projects/d0902e10-6667-0136-c148-5e8eddb6d7b2/status?branch=master)](https://app.codeship.com/projects/297381)
 
 Simple module for [OpenResty](http://openresty.org/) to send errors to
 [Rollbar](https://rollbar.com).
@@ -10,7 +10,7 @@ stack traces. Errors are sent to Rollbar asynchronously in a light thread.
 
 Install using LuaRocks:
 
-```
+```bash
 luarocks install lua-resty-rollbar 0.1.0
 ```
 
@@ -19,14 +19,23 @@ luarocks install lua-resty-rollbar 0.1.0
 ```lua
 local rollbar = require 'resty.rollbar'
 
+-- Set your Rollbar token
+-- This token must have 'post_server_item' scope
 rollbar.set_token('MY_TOKEN')
-rollbar.set_environment('production') -- defaults to 'development'
+-- Set the set_environment. Defaults to 'development'
+rollbar.set_environment('production')
 
 function main()
-	res, err = do_something()
+	local res, err = do_something()
 	if not res {
-		// Error reporting
+		-- Error reporting
+		-- This function will automatically read request information (URI, method,...) if available before reporting the error to Rollbar
 		rollbar.report(rollbar.ERR, err)
+
+		-- If the error reporting occurs from outside a request context (eg. inside a timer), you can supply a third parameter to prevent
+		-- an useless function call that will try to read non existing request information
+		rollbar.report(rollbar.ERR, err, {})
+
 		return
 	}
 end
@@ -40,19 +49,19 @@ to execute the unit tests.
 
 Run the Docker Compose container in a terminal:
 
-```
+```bash
 docker-compose up
 ```
 
 In a different terminal, execute the tests with:
 
-```
+```bash
 docker-compose exec test busted specs
 ```
 
 ## Publish on LuaRocks
 
-```
+```bash
 luarocks upload --api-key=<API key> ./lua-resty-rollbar-0.1.0-1.rockspec
 ```
 

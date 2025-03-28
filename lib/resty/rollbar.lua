@@ -1,15 +1,56 @@
 local http = require 'resty.http'
 local json = require 'cjson'
 
+-- The list of Nginx phase where 'ngx.var' can be found.
+-- Detecting the current phase can be done using 'ngx.get_phase()' (https://github.com/openresty/lua-nginx-module?tab=readme-ov-file#ngxget_phase).
+-- The supported phases for 'ngx.var' can be found here: https://github.com/openresty/lua-nginx-module?tab=readme-ov-file#ngxvarvariable.
+local ALLOWED_PHASE_FOR_NGX_VAR = {
+  ['set'] = true,
+  ['rewrite'] = true,
+  ['access'] = true,
+  ['content'] = true,
+  ['header_filter'] = true,
+  ['body_filter'] = true,
+  ['log'] = true,
+  ['balancer'] = true,
+}
+
+-- The list of Nginx phase where 'ngx.req.XX' can be found.
+-- Up to 4 functions from 'ngx.req' will be used to get the request information:
+-- 1. ngx.req.get_method() to get the HTTP method
+-- (https://github.com/openresty/lua-nginx-module?tab=readme-ov-file#ngxreqget_method)
+-- 2. ngx.req.get_headers() to get the request headers
+-- (https://github.com/openresty/lua-nginx-module?tab=readme-ov-file#ngxreqget_headers)
+-- 3. (Optional) ngx.req.get_uri_args() to get the query string
+-- (https://github.com/openresty/lua-nginx-module?tab=readme-ov-file#ngxreqget_uri_args)
+-- 4. (Optional) ngx.req.get_post_args() to get the POST arguments
+-- (https://github.com/openresty/lua-nginx-module?tab=readme-ov-file#ngxreqget_post_args)
+--
+-- The following table is the list of Nginx phases supported by the 4 functions.
+local ALLOWED_PHASE_FOR_NGX_REQ = {
+  ['rewrite'] = true,
+  ['access'] = true,
+  ['content'] = true,
+  ['header_filter'] = true,
+  ['body_filter'] = true,
+  ['log'] = true,
+}
+
+---@class resty.rollbar
+---@field CRIT string
+---@field ERR string
+---@field WARN string
+---@field INFO string
+---@field DEBUG string
 local _M = {
-  version  = '0.1.0',
+  version = '0.1.0',
 
   -- 	Rollbar severity levels as reported to the Rollbar API.
-  CRIT  = 'critical',
-  ERR   = 'error',
-  WARN  = 'warning',
-  INFO  = 'info',
-  DEBUG = 'debug',
+  CRIT    = 'critical',
+  ERR     = 'error',
+  WARN    = 'warning',
+  INFO    = 'info',
+  DEBUG   = 'debug',
 }
 
 
@@ -30,7 +71,7 @@ local function gethostname()
   local ffi = require "ffi"
   local C = ffi.C
 
-  ffi.cdef[[
+  ffi.cdef [[
   int gethostname(char *name, size_t len);
   ]]
 
@@ -132,7 +173,13 @@ end
 -- report sends an error to Rollbar with the given level and title.
 -- It fills the other fields using Nginx API for Lua
 -- (https://github.com/openresty/lua-nginx-module#nginx-api-for-lua).
-function _M.report(level, title)
+--
+---@param level string#CRIT|ERR|WARN|INFO|DEBUG Rollbar severity level
+---@param title any Report title. This field will be converted to a string if needed
+---@param req_info table? Optional request information if this error was raised by a request.
+-- If the `req_info` field is `nil`, the payload will be automatically filled using `read_request_info`.
+-- If you know that this error was not raised by a request, you can supply `{}` (an empty table) to prevent extracting a non existing payload.
+function _M.report(level, title, req_info)
   if rollbar_initted == nil then
     if isempty(token) then
       rollbar_initted = false
@@ -151,9 +198,31 @@ function _M.report(level, title)
     title = tostring(title)
   end
 
-  local url = ngx.var.scheme..'://'..ngx.var.host..ngx.var.request_uri
+  -- Extract request information if not provided by the caller.
+  if req_info == nil then
+    req_info = _M.read_request_info()
+  end
+
+  -- create a light thread to send the HTTP request in background
+  ngx.timer.at(0, send_request, level, title, debug.traceback(), req_info)
+end
+
+-- read request information (URL, method, query string, args, user IP and headers) from Nginx variables.
+-- This function is called when the request information is not provided by the caller.
+-- This function may only be used in some Nginx phases. Calling this function in other phases will return `nil`.
+--
+---@return table? request_info optional request information extracted from Nginx variables
+function _M.read_request_info()
+  -- Before calling 'ngx.var' or 'ngx.req.XX', we need to check if the current phase is allowed.
+  -- These variables may not be available in all phases (eg. inside a timer)
+  local phase = ngx.get_phase()
+  if ALLOWED_PHASE_FOR_NGX_REQ[phase] == nil or ALLOWED_PHASE_FOR_NGX_VAR[phase] == nil then
+    return nil
+  end
+
+  local url = ngx.var.scheme .. '://' .. ngx.var.host .. ngx.var.request_uri
   local method = ngx.req.get_method()
-  local request = {
+  local request_info = {
     url = url,
     method = method,
     headers = ngx.req.get_headers(),
@@ -161,13 +230,12 @@ function _M.report(level, title)
     user_ip = ngx.var.remote_addr,
   }
   if method == 'GET' then
-    request.GET = ngx.req.get_uri_args()
+    request_info.GET = ngx.req.get_uri_args()
   elseif method == 'POST' then
-    request.POST = ngx.req.get_post_args()
+    request_info.POST = ngx.req.get_post_args()
   end
 
-  -- create a light thread to send the HTTP request in background
-  ngx.timer.at(0, send_request, level, title, debug.traceback(), request)
+  return request_info
 end
 
 function _M.reset()
