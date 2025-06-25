@@ -8,10 +8,18 @@ stack traces. Errors are sent to Rollbar asynchronously in a light thread.
 
 ## Installation
 
-Install using LuaRocks:
+As of version `0.2.0`, the project is unfortunately not published to LuaRocks because we are having trouble getting an answer on our Github issue to transfer the project (https://github.com/luarocks/luarocks-site/issues/218).
+
+However, you can install the project directly using the rockspec URL:
 
 ```bash
-luarocks install lua-resty-rollbar 0.2.0
+luarocks install 'https://github.com/Scalingo/lua-resty-rollbar/releases/download/0.2.0/lua-resty-rollbar-0.2.0-1.rockspec'
+```
+
+If you are looking for older versions, they are [available on LuaRocks directly](https://luarocks.org/modules/etiennem/lua-resty-rollbar):
+
+```bash
+luarocks install lua-resty-rollbar 0.1.0
 ```
 
 ## Usage
