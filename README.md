@@ -13,7 +13,7 @@ As of version `0.2.0`, the project is unfortunately not published to LuaRocks be
 However, you can install the project directly using the rockspec URL:
 
 ```bash
-luarocks install 'https://github.com/Scalingo/lua-resty-rollbar/releases/download/0.2.0/lua-resty-rollbar-0.2.0-1.rockspec'
+luarocks install 'https://github.com/Scalingo/lua-resty-rollbar/releases/download/0.2.0-1/lua-resty-rollbar-0.2.0-1.rockspec'
 ```
 
 If you are looking for older versions, they are [available on LuaRocks directly](https://luarocks.org/modules/etiennem/lua-resty-rollbar):
@@ -67,10 +67,19 @@ In a different terminal, execute the tests with:
 docker compose exec test busted specs
 ```
 
-## Publish on LuaRocks
+## Publish
+
+1. Open a new PR to update the library version in `lib/resty/rollbar.lua`. The version should follow the [SemVer](https://semver.org/) standard.
+2. Get the PR merged
+3. Create and push a new tag to the repository. The name of the tag will become the version. Version name should follow this pattern `X.Y.Z-I`, where `X.Y.Z` is the SemVer version and `I` an increment starting at 1. The increment should only be used if the same version should be republished.
+4. A Github Actions will automatically generate and publish the release.
+
+### (Optional) Publish on LuaRocks
+
+Once the Github release has been created, the library can optionnally be published to LuaRocks. To do so, download the version `rockspec` file from the Github release and execute the following command:
 
 ```bash
-luarocks upload --api-key=<API key> ./lua-resty-rollbar-0.2.0-1.rockspec
+luarocks upload --api-key=<API key> ./lua-resty-rollbar-<VERSION>.rockspec
 ```
 
-The API key is from [LuaRocks settings](https://luarocks.org/settings/api-keys).
+The API key can be found on the [LuaRocks settings](https://luarocks.org/settings/api-keys).

@@ -1,10 +1,10 @@
 rockspec_format = '1.0'
 package = 'lua-resty-rollbar'
-version = '0.2.0-1'
+version = '$VERSION'
 
 source = {
    url = 'git+https://github.com/Scalingo/lua-resty-rollbar',
-   tag = '0.2.0',
+   tag = '$VERSION',
 }
 
 description = {
