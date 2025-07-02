@@ -1,0 +1,46 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - "*" # triggers on all tags
+
+# The list of permissions is explained on the GitHub doc:
+# https://docs.github.com/en/actions/using-jobs/assigning-permissions-to-jobs
+permissions:
+  # Write permissions is needed to create a new release
+  contents: write
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up variables
+        id: vars
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/}
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Generate rockspec file
+        run: |
+          BASE_FILE="lua-resty-rollbar.rockspec"
+          RELEASE_FILE="lua-resty-rollbar-${{ env.VERSION }}.rockspec"
+          # Set the version and the tag
+          export VERSION="${{ env.VERSION }}"
+          envsubst < "$BASE_FILE" > "$RELEASE_FILE"
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.VERSION }}
+          name: Release ${{ env.VERSION }}
+          files: lua-resty-rollbar-${{ env.VERSION }}.rockspec
+          fail_on_unmatched_files: true
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -43,7 +43,7 @@ local ALLOWED_PHASE_FOR_NGX_REQ = {
 ---@field INFO string
 ---@field DEBUG string
 local _M = {
-  version = '0.1.0',
+  version = '0.2.0',
 
   -- 	Rollbar severity levels as reported to the Rollbar API.
   CRIT    = 'critical',
