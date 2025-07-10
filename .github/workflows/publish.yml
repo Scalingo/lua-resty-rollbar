@@ -20,6 +20,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Install LuaRocks
+        run: |
+          sudo apt-get update
+          sudo apt-get install luarocks
+
       - name: Set up variables
         id: vars
         run: |
@@ -44,3 +49,9 @@ jobs:
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to LuaRocks
+        run: |
+          # A JSON library is required to upload the rockspec. Dkjson supports Lua >= 5.1
+          luarocks install --local dkjson
+          luarocks upload --api-key=${{ secrets.LUAROCKS_API_KEY }} lua-resty-rollbar-${{ env.VERSION }}.rockspec
