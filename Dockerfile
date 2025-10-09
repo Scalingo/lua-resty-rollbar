@@ -1,4 +1,4 @@
-FROM openresty/openresty:1.27.1.1-jammy
+FROM openresty/openresty:1.27.1.2-jammy
 
 LABEL maintainer="Scalingo Team <tech@scalingo.com>"
 
