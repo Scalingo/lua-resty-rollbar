@@ -20,7 +20,7 @@ luarocks --tree "${LUAROCKS_TREE}" install busted
 luarocks --tree "${LUAROCKS_TREE}" install lua-resty-http
 luarocks --tree "${LUAROCKS_TREE}" install lua-cjson
 
-# Install lua-resty-busted
+# Install resty-busted (runs busted in OpenResty context with ngx available)
 git clone --depth 1 https://github.com/thibaultcha/lua-resty-busted /tmp/lua-resty-busted
 sudo cp /tmp/lua-resty-busted/bin/busted /usr/local/bin/resty-busted
 sudo chmod +x /usr/local/bin/resty-busted

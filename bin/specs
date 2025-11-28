@@ -1,4 +1,10 @@
 #!/bin/bash
 set -euo pipefail
 
-resty-busted specs
+# Use resty-busted if available (CI), otherwise fall back to busted (Docker)
+# resty-busted runs tests in OpenResty context where ngx is available
+if command -v resty-busted &> /dev/null; then
+  resty-busted specs
+else
+  busted specs
+fi

@@ -6,7 +6,7 @@ function wait_no_limit() {
 }
 
 echo "============="
-echo "Container ready, run 'docker compose exec test busted specs' to execute tests"
+echo "Container ready, run 'docker compose exec test bin/specs' to execute tests"
 echo "============="
 
 trap "exit 0" TERM INT
