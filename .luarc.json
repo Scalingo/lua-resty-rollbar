@@ -1,0 +1,7 @@
+{
+  "workspace.checkThirdParty": false,
+  "runtime.version": "LuaJIT",
+  "workspace.library": [
+    "${3rd}/OpenResty/library"
+  ]
+}
