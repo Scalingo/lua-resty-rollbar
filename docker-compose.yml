@@ -4,5 +4,6 @@ services:
     working_dir: /root/lua
     volumes:
       - ./entrypoint.sh:/entrypoint.sh
+      - ./bin:/root/lua/bin
       - ./lib:/root/lua
       - ./specs:/root/lua/specs

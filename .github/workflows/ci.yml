@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [ main, master, prod ]
+
+permissions:
+  contents: read
+
+jobs:
+  linter:
+    name: Linter on a PR
+    if: ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: Scalingo/actions/lua-linter@main
+
+  tests:
+    name: Unit Tests
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: Scalingo/actions/lua-tests@main
