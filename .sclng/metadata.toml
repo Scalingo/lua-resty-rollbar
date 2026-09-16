@@ -1,7 +1,8 @@
 dependencies = []
 description = "Module to send errors to Rollbar from OpenResty"
 flags = ["lib"]
-languages = ["lua"]
-owner = "etienne@scalingo.com"
+languages = ["lua", "github-actions"]
+owner = "team-infrastructure-services@scalingo.com"
 team = "IST"
+tier = 1
 version = "1.1.1"
